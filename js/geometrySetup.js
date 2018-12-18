@@ -12,23 +12,11 @@ var material = new THREE.ShaderMaterial( {
           type: "f",
           value: 0.0
         },
-        A: {
+        steepness: {
           type: "f",
           value: 1.0
         },
-        W: {
-          type: "f",
-          value: 1.0
-        },
-        dir: {
-          type: "f",
-          value: 1.0
-        },
-        S: {
-          type: "f",
-          value: 1.0
-        },
-        L: {
+        wave_length: {
           type: "f",
           value: 1.0
         },
