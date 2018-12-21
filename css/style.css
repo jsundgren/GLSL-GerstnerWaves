@@ -12,3 +12,15 @@ canvas {
     height: 100vh;
     display: block;
 }
+
+#info {
+    position:absolute;
+    width:25%;
+    height:auto;
+    margin-left:5%;
+    font-family: 'Bahnschrift';
+}
+
+h2 {
+    text-align: justify;
+}

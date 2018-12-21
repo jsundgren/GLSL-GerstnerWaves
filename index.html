@@ -10,16 +10,29 @@
         <script type="x-shader/x-vertex" id="vertexShader">
 
             uniform float time;
-            //uniform float steepness;
-            //uniform float wave_length;
+            uniform float X_w1;
+            uniform float Y_w1;
+            uniform float Steepness_w1;
+            uniform float Wave_length_w1;
+            uniform float X_w2;
+            uniform float Y_w2;
+            uniform float Steepness_w2;
+            uniform float Wave_length_w2;
+            uniform float X_w3;
+            uniform float Y_w3;
+            uniform float Steepness_w3;
+            uniform float Wave_length_w3;
+            
             float PI = 3.1456;
             float g = 9.82;
+            
             varying vec3 vNormal;
             varying vec3 vPosition;
+            
             // wave(dir, steepness, wavelength)
-            vec4 wave_a = vec4(1.0, 0, 0.5, 10);
-            vec4 wave_b = vec4(0, 1.0, 0.25, 20);
-            vec4 wave_c = vec4(1.0, 1.0, 0.15, 10);
+            vec4 wave_a = vec4(X_w1, Y_w1, Steepness_w1, Wave_length_w1);
+            vec4 wave_b = vec4(X_w2, Y_w2, Steepness_w2, Wave_length_w2);
+            vec4 wave_c = vec4(X_w3, Y_w3, Steepness_w3, Wave_length_w3);
             
             vec3 GerstnerWaves(vec4 wave, vec3 pos){
                 
@@ -28,11 +41,12 @@
                 float k = 2.0 * PI / wave_length;
                 float c = sqrt(g / k);
                 vec2 d = normalize(wave.xy);
-			    float f = k * (dot(d, pos.xz) - c * time);
+			    float f = k * (dot(d, pos.xy) - c * time);
                 float a = steepness / k;
                 
-                return vec3(d.x * (a * cos(f)),	a * sin(f),	d.y * (a * cos(f)));
+                return vec3(d.x * (a * cos(f)),	d.y * (a * cos(f)), a * sin(f));
             }
+            
             
             vec3 CalcTangent(vec4 wave, vec3 pos, vec3 tangent){
                 
@@ -44,8 +58,8 @@
 			    float f = k * (dot(d, pos.xz) - c * time);
                 
 			    tangent += vec3(-d.x * d.y * (steepness * sin(f)),
-                                d.y * (steepness * cos(f)),
-				                -d.y * d.y * (steepness * sin(f)));
+                                -d.y * d.y * (steepness * sin(f)),
+                                d.y * (steepness * cos(f)));
                 
                 return tangent;
             }
@@ -59,9 +73,9 @@
                 vec2 d = normalize(wave.xy);
 			    float f = k * (dot(d, pos.xz) - c * time);
                 
-                binormal += vec3(-d.x * d.x * (steepness * sin(f)),
-				                d.x * (steepness * cos(f)),
-                                -d.x * d.y * (steepness * sin(f)));
+			    binormal += vec3(-d.x * d.y * (steepness * sin(f)),
+                                -d.y * d.y * (steepness * sin(f)),
+                                d.y * (steepness * cos(f)));
                 
                 return binormal;
             }
@@ -69,25 +83,25 @@
                   
             void main() {
               
-	          vPosition = position;
+	          
               vec3 new_position = position;
               vec3 tangent = vec3(1.0, 0, 0);
               vec3 binormal = vec3(0, 0, 1.0);
               vec3 wave_pos = new_position;
               wave_pos += GerstnerWaves(wave_a, new_position);
-              tangent = CalcTangent(wave_a, new_position, tangent);
-              binormal = CalcBinormal(wave_a, new_position, binormal);
+              tangent += CalcTangent(wave_a, new_position, tangent);
+              binormal += CalcBinormal(wave_a, new_position, binormal);
               
               wave_pos += GerstnerWaves(wave_b, new_position);
-              tangent = CalcTangent(wave_b, new_position, tangent);
-              binormal = CalcBinormal(wave_b, new_position, binormal);
+              tangent += CalcTangent(wave_b, new_position, tangent);
+              binormal += CalcBinormal(wave_b, new_position, binormal);
               
               wave_pos += GerstnerWaves(wave_c, new_position);
-              tangent = CalcTangent(wave_c, new_position, tangent);
-              binormal = CalcBinormal(wave_c, new_position, binormal);
+              tangent += CalcTangent(wave_c, new_position, tangent);
+              binormal += CalcBinormal(wave_c, new_position, binormal);
               
               vNormal = normalize(cross(binormal, tangent));
-              
+              vPosition = wave_pos;
               gl_Position = projectionMatrix * modelViewMatrix * vec4( wave_pos, 1.0 );
               
             }
@@ -111,9 +125,9 @@
               vec3 H = normalize( L + V );
               vec3 R = normalize( reflect( -light, vNormal ));
 
-              float ambient = 0.01;
+              float ambient = 0.1;
               float diffuse = dnc( L, vNormal );
-              float specular = pow( dnc( vNormal, H ), 4.0);
+              float specular = pow( dnc( vNormal, H ), 10.0);
 
               vec3 material = vec3( 0.0, 0.0, 1.0 );
               vec3 newColor = material * ( specular + diffuse + ambient );
@@ -124,10 +138,17 @@
 
 	</head>
 	<body>
+        <div id="info"> 
+            <h1>GERSTNER WAVES</h1>
+            <h3>Wave simulation made by Johan Sundgren. Running on WebGL using Three.js and custom shaders.</h3>
+        </div>
 		<script src="js/three.js"></script>
         <script src="js/OrbitControls.js"></script>
 		<script src="js/scene.js"></script>
         <script src="js/geometrySetup.js"></script>
         <script src="js/render.js"></script>        
-	</body>
+	
+
+        
+    </body>
 </html>

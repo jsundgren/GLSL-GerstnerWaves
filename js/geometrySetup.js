@@ -1,6 +1,6 @@
 
-var height = 20;
-var width = 10;
+var height = 70;
+var width = 70;
 var segments = 60;
 var irregularity = 0.5;
 var geometry = new THREE.PlaneGeometry( height, width, segments, segments );
@@ -12,13 +12,53 @@ var material = new THREE.ShaderMaterial( {
           type: "f",
           value: 0.0
         },
-        steepness: {
+        X_w1: {
           type: "f",
-          value: 1.0
+          value: 0.0
         },
-        wave_length: {
+        Y_w1: {
           type: "f",
-          value: 1.0
+          value: 0.0
+        },
+        Steepness_w1: {
+          type: "f",
+          value: 0.0
+        },
+        Wave_length_w1: {
+          type: "f",
+          value: 0.0
+        },
+        X_w2: {
+          type: "f",
+          value: 0.0
+        },
+        Y_w2: {
+          type: "f",
+          value: 0.0
+        },
+        Steepness_w2: {
+          type: "f",
+          value: 0.0
+        },
+        Wave_length_w2: {
+          type: "f",
+          value: 0.0
+        },
+        X_w3: {
+          type: "f",
+          value: 0.0
+        },
+        Y_w3: {
+          type: "f",
+          value: 0.0
+        },
+        Steepness_w3: {
+          type: "f",
+          value: 0.0
+        },
+        Wave_length_w3: {
+          type: "f",
+          value: 0.0
         },
         light: {
             type: "vec3",
@@ -33,7 +73,7 @@ var material = new THREE.ShaderMaterial( {
     fragmentShader: document.getElementById( 'fragmentShader' ).textContent
 }  );
 
-material.wireframe = false;
+material.wireframe = true;
 
 var model = new THREE.Mesh( geometry, material );
 
