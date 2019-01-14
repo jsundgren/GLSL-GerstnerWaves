@@ -12,54 +12,6 @@ var material = new THREE.ShaderMaterial( {
           type: "f",
           value: 0.0
         },
-        X_w1: {
-          type: "f",
-          value: 0.0
-        },
-        Y_w1: {
-          type: "f",
-          value: 0.0
-        },
-        Steepness_w1: {
-          type: "f",
-          value: 0.0
-        },
-        Wave_length_w1: {
-          type: "f",
-          value: 0.0
-        },
-        X_w2: {
-          type: "f",
-          value: 0.0
-        },
-        Y_w2: {
-          type: "f",
-          value: 0.0
-        },
-        Steepness_w2: {
-          type: "f",
-          value: 0.0
-        },
-        Wave_length_w2: {
-          type: "f",
-          value: 0.0
-        },
-        X_w3: {
-          type: "f",
-          value: 0.0
-        },
-        Y_w3: {
-          type: "f",
-          value: 0.0
-        },
-        Steepness_w3: {
-          type: "f",
-          value: 0.0
-        },
-        Wave_length_w3: {
-          type: "f",
-          value: 0.0
-        },
         light: {
             type: "vec3",
             value: lightPos
@@ -70,10 +22,11 @@ var material = new THREE.ShaderMaterial( {
         }
     },
     vertexShader: document.getElementById( 'vertexShader' ).textContent,
-    fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+    fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+    side: THREE.DoubleSide
 }  );
 
-material.wireframe = true;
+material.wireframe = false;
 
 var model = new THREE.Mesh( geometry, material );
 
