@@ -16,19 +16,10 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-
-Parameters = function() {
-
-};
-
-// Dat GUI
-window.onload = function() {
-    text = new Parameters();
-    var gui = new dat.GUI();
-
-};
 // Lighting
 var light = new THREE.DirectionalLight();
-light.position.set(0,50,0);
+light.position.set(0,50,-10);
 scene.add( light );
+
+
 

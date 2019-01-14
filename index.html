@@ -13,8 +13,8 @@
             float PI = 3.1456;
             float g = 9.82;
             
-            varying vec3 vNormal;
-            varying vec3 vPosition;
+            vec3 disp_normal;
+            varying vec3 vVertex_position;
             
             // wave(dir, steepness, wavelength)
             vec4 wave_a = vec4(1.0, 0.0, 0.25, 60.0);
@@ -43,7 +43,7 @@
             }
             
             void main() {
-              
+              vVertex_position = position;
               vec3 new_position = position;
               vec3 tangent = vec3(1.0, 0, 0);
               vec3 binormal = vec3(0, 0, 1.0);
@@ -52,8 +52,7 @@
               wave_pos += GerstnerWaves(wave_b, new_position, tangent, binormal);
               wave_pos += GerstnerWaves(wave_c, new_position, tangent, binormal);
               
-              vNormal = normalize(cross(binormal, tangent));
-              vPosition = wave_pos;
+              disp_normal = normalize(cross(binormal, tangent));
               gl_Position = projectionMatrix * modelViewMatrix * vec4( wave_pos, 1.0 );
               
             }
@@ -63,26 +62,67 @@
             uniform vec3 camera;
             uniform vec3 light;
             
-            varying vec3 vNormal;
-            varying vec3 vPosition;
+            varying vec3 vVertex_position;
+            vec3 normal;
+            vec3 l_color = vec3(1.0, 1.0, 1.0);
             
-            float dnc( vec3 a, vec3 b ) {
-              return clamp( dot(a, b), 0.0, 1.0 );
+            uniform float time;            
+            float PI = 3.1456;
+            float g = 9.82;
+            
+            // wave(dir, steepness, wavelength)
+            vec4 wave_a = vec4(1.0, 0.0, 0.25, 60.0);
+            vec4 wave_b = vec4(1.0, 0.6, 0.25, 31.0);
+            vec4 wave_c = vec4(1.0, 1.3, 0.25, 18.0);
+            
+            vec3 GerstnerWaves(vec4 wave, vec3 pos, inout vec3 tangent, inout vec3 binormal){
+                
+                float steepness = wave.z;
+                float wave_length = wave.w;
+                float k = 2.0 * PI / wave_length;
+                float c = sqrt(g / k);
+                vec2 d = normalize(wave.xy);
+			    float f = k * (dot(d, pos.xy) - c * time);
+                float a = steepness / k;
+                
+                tangent += vec3(-d.x * d.x * (steepness * sin(f)),
+                                d.x * (steepness * cos(f)),
+                                -d.x * d.y * (steepness * sin(f)));
+                                
+                binormal += vec3(-d.x * d.y * (steepness * sin(f)),
+                                d.y * (steepness * cos(f)),
+                                -d.y * d.y * (steepness * sin(f)));
+                
+                return vec3(d.x * (a * cos(f)),	d.y * (a * cos(f)), a * sin(f));
             }
             
             void main() {
-              vec3 N = vNormal;
-              vec3 L = normalize( light - vPosition );
-              vec3 V = normalize( camera - vPosition );
+            
+              vec3 new_position = vVertex_position;
+              vec3 tangent = vec3(1.0, 0, 0);
+              vec3 binormal = vec3(0, 0, 1.0);
+              vec3 wave_pos = new_position;
+              wave_pos += GerstnerWaves(wave_a, new_position, tangent, binormal);
+              wave_pos += GerstnerWaves(wave_b, new_position, tangent, binormal);
+              wave_pos += GerstnerWaves(wave_c, new_position, tangent, binormal);
+              normal = normalize(cross(binormal, tangent));
+            
+            
+              vec3 N = normal;
+              vec3 L = normalize( light - wave_pos );
+              vec3 V = normalize( camera - wave_pos );
               vec3 H = normalize( L + V );
               vec3 R = normalize( reflect( -light, N ));
 
-              float ambient = 0.0;
+              float ambient = 0.1;
+              vec3 amb = ambient * l_color;
               float diffuse = max(dot(N, L), 0.0);
-              float specular = pow(max(dot(V, R), 0.0), 128.0);
-
-              vec3 material = vec3( 0.0, 0.0, 1.0 );
-              vec3 newColor = material * ( specular + diffuse + ambient );
+              vec3 diff = diffuse * l_color;
+              float spec_constant = 0.5;
+              float specular = pow(max(dot(V, R), 0.0), 16.0);
+              vec3 spec = specular * spec_constant * l_color;
+              vec3 material = vec3( 27.0/255.0, 111.0/255.0, 247.0/255.0 );
+              vec3 newColor = ( spec + material ) * ( diff + amb );
               
               gl_FragColor = vec4( newColor, 1.0 );
             }
@@ -93,6 +133,8 @@
         <div id="info"> 
             <h1>GERSTNER WAVES</h1>
             <h3>Wave simulation made by Johan Sundgren. Running on WebGL using Three.js and custom shaders.</h3>
+            <h3>Press 'W' to activate wireframe.</h3>
+            
         </div>
 		<script src="js/three.js"></script>
         <script src="js/OrbitControls.js"></script>

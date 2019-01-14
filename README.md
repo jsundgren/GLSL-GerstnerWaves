@@ -1,1 +1,1 @@
-# ProceduralTerrain
+# Gerstner Waves
