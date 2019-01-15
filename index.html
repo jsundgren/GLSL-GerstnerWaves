@@ -16,11 +16,12 @@
             vec3 disp_normal;
             varying vec3 vVertex_position;
             
-            // wave(dir, steepness, wavelength)
+            // wave(dirX, dirY, steepness, wavelength)
             vec4 wave_a = vec4(1.0, 0.0, 0.25, 60.0);
             vec4 wave_b = vec4(1.0, 0.6, 0.25, 31.0);
             vec4 wave_c = vec4(1.0, 1.3, 0.25, 18.0);
             
+            // Function to calculate each Gerstner wave
             vec3 GerstnerWaves(vec4 wave, vec3 pos, inout vec3 tangent, inout vec3 binormal){
                 
                 float steepness = wave.z;
@@ -70,7 +71,7 @@
             float PI = 3.1456;
             float g = 9.82;
             
-            // wave(dir, steepness, wavelength)
+            // wave(dirX, dirY, steepness, wavelength)
             vec4 wave_a = vec4(1.0, 0.0, 0.25, 60.0);
             vec4 wave_b = vec4(1.0, 0.6, 0.25, 31.0);
             vec4 wave_c = vec4(1.0, 1.3, 0.25, 18.0);
@@ -111,7 +112,6 @@
               vec3 N = normal;
               vec3 L = normalize( light - wave_pos );
               vec3 V = normalize( camera - wave_pos );
-              vec3 H = normalize( L + V );
               vec3 R = normalize( reflect( -light, N ));
 
               float ambient = 0.1;
@@ -132,7 +132,7 @@
 	<body>
         <div id="info"> 
             <h1>GERSTNER WAVES</h1>
-            <h3>Wave simulation made by Johan Sundgren. Running on WebGL using Three.js and custom shaders.</h3>
+            <h3>Wave simulation made by Johan Sundgren. Running on WebGL using Three.js and custom shaders wrtitten in GLSL.</h3>
             <h3>Press 'W' to activate wireframe.</h3>
             
         </div>
