@@ -1,5 +1,3 @@
-var Parameters, text;
-
 // Create a scene
 var scene = new THREE.Scene();
 scene.background = new THREE.Color( 0xfaffaa );
@@ -8,8 +6,8 @@ var controls = new THREE.OrbitControls( camera );
 camera.position.set(0,40,50);
 controls.update();
            
-var axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
+//var axesHelper = new THREE.AxesHelper( 5 );
+//scene.add( axesHelper );
 
 // Set up renderer
 var renderer = new THREE.WebGLRenderer();

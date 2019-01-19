@@ -1,11 +1,12 @@
-
-var height = 70;
-var width = 70;
+var side = 70;
 var segments = 60;
-var irregularity = 0.5;
-var geometry = new THREE.PlaneGeometry( height, width, segments, segments );
+
+// The plane
+var geometry = new THREE.PlaneGeometry( side, side, segments, segments );
 var cameraPos = camera.position;
 var lightPos = light.position;
+
+// Define the material and the uniforms that gets sent to the shader
 var material = new THREE.ShaderMaterial( {
     uniforms: {
         time: {

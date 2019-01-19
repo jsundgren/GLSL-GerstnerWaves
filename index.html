@@ -7,11 +7,14 @@
         <link href="css/style.css" rel="stylesheet">
         
         <script type="text/javascript" src="js/dat.gui.min.js"></script>
+        
+        /////// VERTEX SHADER ////////
         <script type="x-shader/x-vertex" id="vertexShader">
 
             uniform float time;            
             float PI = 3.1456;
             float g = 9.82;
+            
             
             vec3 disp_normal;
             varying vec3 vVertex_position;
@@ -21,17 +24,23 @@
             vec4 wave_b = vec4(1.0, 0.6, 0.25, 31.0);
             vec4 wave_c = vec4(1.0, 1.3, 0.25, 18.0);
             
-            // Function to calculate each Gerstner wave
+            // Function to calculate each Gerstner wave and accumulate the normals by recalculating the tangent and binormal
             vec3 GerstnerWaves(vec4 wave, vec3 pos, inout vec3 tangent, inout vec3 binormal){
                 
                 float steepness = wave.z;
                 float wave_length = wave.w;
+                // Wave number 
                 float k = 2.0 * PI / wave_length;
+                // Speed
                 float c = sqrt(g / k);
+                // Direction
                 vec2 d = normalize(wave.xy);
+                // Base of gerstner function
 			    float f = k * (dot(d, pos.xy) - c * time);
+                // Amplitude
                 float a = steepness / k;
                 
+                // Calculate the partial derivate in the different dimensions to get correct the normals after displacement
                 tangent += vec3(-d.x * d.x * (steepness * sin(f)),
                                 d.x * (steepness * cos(f)),
                                 -d.x * d.y * (steepness * sin(f)));
@@ -58,7 +67,11 @@
               
             }
         </script>
+        
+        /////// FRAGMENT SHADER ////////
         <script type="x-shader/x-vertex" id="fragmentShader">
+            
+            // Same calculations are done here as above to eliminate artifacts in the shading
             
             uniform vec3 camera;
             uniform vec3 light;
@@ -75,6 +88,7 @@
             vec4 wave_a = vec4(1.0, 0.0, 0.25, 60.0);
             vec4 wave_b = vec4(1.0, 0.6, 0.25, 31.0);
             vec4 wave_c = vec4(1.0, 1.3, 0.25, 18.0);
+            
             
             vec3 GerstnerWaves(vec4 wave, vec3 pos, inout vec3 tangent, inout vec3 binormal){
                 
@@ -108,7 +122,7 @@
               wave_pos += GerstnerWaves(wave_c, new_position, tangent, binormal);
               normal = normalize(cross(binormal, tangent));
             
-            
+              // Phong shading 
               vec3 N = normal;
               vec3 L = normalize( light - wave_pos );
               vec3 V = normalize( camera - wave_pos );
@@ -141,8 +155,6 @@
 		<script src="js/scene.js"></script>
         <script src="js/geometrySetup.js"></script>
         <script src="js/render.js"></script>        
-	
-
-        
+	  
     </body>
 </html>
