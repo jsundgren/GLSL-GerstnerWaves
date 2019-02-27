@@ -1,5 +1,5 @@
-var side = 70;
-var segments = 60;
+var side = 100;
+var segments = 100;
 
 // The plane
 var geometry = new THREE.PlaneGeometry( side, side, segments, segments );
